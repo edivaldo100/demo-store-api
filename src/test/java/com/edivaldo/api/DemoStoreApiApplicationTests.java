@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 class DemoStoreApiApplicationTests {
 
 	@Test
-	void contextLoads() {
+	public void contextLoads() {
 	}
 
 }
