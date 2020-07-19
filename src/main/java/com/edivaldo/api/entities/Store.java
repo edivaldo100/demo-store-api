@@ -25,6 +25,11 @@ public class Store implements Serializable {
 	
 	public Store() {
 	}
+	
+	public Store(String name) {
+		super();
+		this.name = name;
+	}
 
 	@Id
     @GeneratedValue(strategy=GenerationType.AUTO)
