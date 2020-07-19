@@ -2,6 +2,7 @@ package com.edivaldo.api.services;
 
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 
@@ -45,5 +46,12 @@ public interface StoreService {
 	 * @return ResponseEntity<Response<StoreDto>>
 	 */
 	ResponseEntity<Response<StoreDto>> register(StoreDto storeDto, BindingResult result);
+
 	
+	/**
+	 * list All Stores
+	 * 
+	 * @return ResponseEntity<Response<Page<StoreDto>>>
+	 */
+	ResponseEntity<Response<Page<StoreDto>>> listAll();
 }

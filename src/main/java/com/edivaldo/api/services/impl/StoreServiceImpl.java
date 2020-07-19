@@ -5,6 +5,9 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
@@ -70,7 +73,6 @@ public class StoreServiceImpl implements StoreService {
 	}
 
 	private Store converterDtoToStore(StoreDto storeDto) {
-		// TODO Auto-generated method stub
 		return new Store(storeDto.getName());
 	}
 
@@ -79,14 +81,22 @@ public class StoreServiceImpl implements StoreService {
 	 * @param storeDto
 	 * @param result
 	 */
-	
 	private void validaData(StoreDto storeDto, BindingResult result) {
 		//Optional<Store> findByName = storeService.findByName(storeDto.getName());
 		//if(findByName.isPresent()) result.addError(new ObjectError("Loja", "Loja já cadastrada."));
-		
 		storeService.findByName(storeDto.getName())
 		.ifPresent(store -> result.addError(new ObjectError("Loja", "Loja já cadastrada.")));
-		
+	}
+
+	@Override
+	public ResponseEntity<Response<Page<StoreDto>>> listAll() {
+		log.info("Lista de lojas");
+		Response<Page<StoreDto>> response = new Response<Page<StoreDto>>();
+		PageRequest pageRequest = new PageRequest(0, 100, Direction.valueOf("DESC"), "id");
+		Page<Store> findAll = this.storeRepository.findAll(pageRequest);
+		Page<StoreDto> pgStoreDto = findAll.map(store -> this.converterStoreToDto(store));
+		response.setData(pgStoreDto);
+		return ResponseEntity.ok(response);
 	}
 
 }
