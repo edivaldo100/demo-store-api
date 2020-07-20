@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.edivaldo.api.dtos.UserDto;
 import com.edivaldo.api.response.Response;
 import com.edivaldo.api.services.UserService;
-import com.kazale.pontointeligente.api.dtos.FuncionarioDto;
 
 @RestController
 @RequestMapping("/api/users")
