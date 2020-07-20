@@ -125,5 +125,46 @@ public class UserServiceImpl implements UserService {
 			if(!opStore.isPresent())result.addError(new ObjectError("user", "Loja ( "+consumer+" ) não Existe."));
 		});
 	}
+	
+	private void validaDataUpdate(Long id, UserDto userDto, BindingResult result) {
+		User findById = this.userRepository.findById(id);
+		if(findById == null) result.addError(new ObjectError("user", "Usuário Não cadastrado."));
+		
+		userDto.getProfile().ifPresent(consumer -> {
+			ProfileEnum forName = ProfileEnum.forName(consumer);
+			if(forName == null)result.addError(new ObjectError("user", "Perfil de Usuário ( "+consumer+" ) não Existe."));
+		});
+		
+		userDto.getStore().ifPresent(consumer -> {
+			Optional<Store> opStore = storeService.findByName(userDto.getStore().get());
+			if(!opStore.isPresent())result.addError(new ObjectError("user", "Loja ( "+consumer+" ) não Existe."));
+		});
+	}
+
+	@Override
+	public ResponseEntity<Response<UserDto>> updateById(Long id) {
+		return null;
+	}
+
+	@Override
+	public ResponseEntity<Response<UserDto>> update(Long id, UserDto userDto, BindingResult result) {
+		log.info("update de Usuário na loja {}", userDto.toString());
+		Response<UserDto> response = new Response<>();
+		
+		validaDataUpdate(id, userDto, result);
+		if(result.hasErrors()) {
+			log.info("Erro na validação de Dados {}", result.getAllErrors());
+			result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
+			return ResponseEntity.badRequest().body(response);
+		}
+		//User findById = this.userRepository.findById(id);
+		
+		User user = this.converterDtoToUser(userDto);
+		user.setId(id);
+		User save = this.userRepository.saveAndFlush(user);
+		UserDto newUserDto = this.converterUserToDto(save);
+		response.setData(newUserDto);
+		return ResponseEntity.ok(response);
+	}
 
 }

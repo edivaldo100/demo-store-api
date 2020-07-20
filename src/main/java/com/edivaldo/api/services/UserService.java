@@ -41,5 +41,9 @@ public interface UserService {
 
 	ResponseEntity<Response<UserDto>> register(UserDto userDto, BindingResult result);
 
+	ResponseEntity<Response<UserDto>> updateById(Long id);
+
+	ResponseEntity<Response<UserDto>> update(Long id, UserDto userDto, BindingResult result);
+
 	
 }
