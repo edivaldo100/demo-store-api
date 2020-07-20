@@ -1,18 +1,36 @@
 package com.edivaldo.api.dtos;
 
+import java.util.Optional;
+
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import com.edivaldo.api.enums.ProfileEnum;
-
-public class RegisterDto {
+public class UserDto {
 	
 	private String name;
 	private String email;
 	private String password;
-	private ProfileEnum profile;
+	private Optional<String> profile = Optional.empty();
+	private Optional<String> store = Optional.empty();
 	
+	public UserDto() {
+	}
+	public UserDto(String name, String email, String password, Optional<String> profile, Optional<String> store) {
+		this.name = name;
+		this.email = email;
+		this.password = password;
+		this.profile = profile;
+		this.store = store;
+	}
+	public UserDto(String name, String email, String password) {
+		super();
+		this.name = name;
+		this.email = email;
+		this.password = password;
+	}
+
+
 	@NotEmpty(message = "Nome não pode ser vazio.")
 	@Length(min = 3, max = 200, message = "Nome deve conter entre 3 e 200 caracteres.")
 	public String getName() {
@@ -40,14 +58,22 @@ public class RegisterDto {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
-	@NotEmpty(message = "Perfil de Usuário não pode ser vazio.")
-	public ProfileEnum getProfile() {
+	public Optional<String> getProfile() {
 		return profile;
 	}
-	public void setProfile(ProfileEnum profile) {
+	public void setProfile(Optional<String> profile) {
 		this.profile = profile;
 	}
-	
+	public Optional<String> getStore() {
+		return store;
+	}
+	public void setStore(Optional<String> store) {
+		this.store = store;
+	}
+	@Override
+	public String toString() {
+		return "UserDto [name=" + name + ", email=" + email + ", password=" + password + ", profile=" + profile
+				+ ", store=" + store + "]";
+	}
 	
 }

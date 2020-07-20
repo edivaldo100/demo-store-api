@@ -27,8 +27,6 @@ ALTER TABLE `user`
   ADD PRIMARY KEY (`id`),
   ADD KEY `FK4cm1kg523jlopyexjbmi6y54j` (`id_store`);
 
-
-
 --
 -- AUTO_INCREMENT for table `store`
 --
@@ -40,9 +38,6 @@ ALTER TABLE `store`
 ALTER TABLE `user`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
---
--- Constraints for dumped tables
---
 
 --
 -- Constraints for table `users`

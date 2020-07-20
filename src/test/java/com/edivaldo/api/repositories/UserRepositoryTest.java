@@ -1,6 +1,10 @@
 package com.edivaldo.api.repositories;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+
+import java.util.Optional;
 
 import org.junit.After;
 import org.junit.Before;
@@ -30,6 +34,7 @@ public class UserRepositoryTest {
 	private static final String STORE_NAME = "ONE STORE BR";
 	
 	private static final String NAME = "Hulk";
+	private static final String NAME2 = "Homem de ferro";
 
 	@Before
 	public void setUp() throws Exception {
@@ -49,8 +54,16 @@ public class UserRepositoryTest {
 
 	@Test
 	public void testFindByName() {
-		User findByName = this.userRepository.findByName(NAME);
-		assertEquals(NAME, findByName.getName());
+		//User findByName = this.userRepository.findByName(NAME);
+		Optional<User> findByName = this.userRepository.findByName(NAME);
+		assertEquals(NAME, findByName.get().getName());
+	}
+	
+	@Test
+	public void testFindByNameNull() {
+		//User findByName = this.userRepository.findByName(NAME);
+		Optional<User> findByName = this.userRepository.findByName(NAME2);
+		assertFalse(findByName.isPresent());
 	}
 
 }

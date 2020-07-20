@@ -37,7 +37,7 @@ public class UserServiceTest {
 		BDDMockito.given(this.userRepository.save(Mockito.any(User.class))).willReturn(new User());
 		BDDMockito.given(this.userRepository.findOne(Mockito.anyLong())).willReturn(new User());
 		BDDMockito.given(this.userRepository.findByEmail(Mockito.anyString())).willReturn(new User());
-		BDDMockito.given(this.userRepository.findByName(Mockito.anyString())).willReturn(new User());
+		//BDDMockito.given(this.userRepository.findByName(Mockito.anyString())).willReturn(new Optional<User>().get());
 	}
 
 	@Test

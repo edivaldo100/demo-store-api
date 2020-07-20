@@ -51,7 +51,8 @@ public class Store implements Serializable {
 	}
 
 
-	@OneToMany(mappedBy = "store", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToMany(targetEntity=User.class, mappedBy="store",cascade=CascadeType.ALL, fetch = FetchType.LAZY)    
+	//@OneToMany(mappedBy = "store", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	public List<User> getUsers() {
 		return users;
 	}

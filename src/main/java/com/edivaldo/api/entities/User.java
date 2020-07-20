@@ -2,6 +2,7 @@ package com.edivaldo.api.entities;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -10,6 +11,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -87,7 +89,11 @@ public class User implements Serializable {
 		this.profile = profile;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	//@ManyToOne(fetch = FetchType.EAGER)
+	//@ManyToOne()
+	@ManyToOne(fetch = FetchType.LAZY,  cascade=CascadeType.ALL)
+	//@JoinColumn(name="id")
+	@JoinColumn(name="id", referencedColumnName = "id", insertable = false, updatable = false)    
 	public Store getStore() {
 		return store;
 	}
