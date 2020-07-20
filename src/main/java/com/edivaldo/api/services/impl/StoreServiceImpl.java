@@ -99,4 +99,20 @@ public class StoreServiceImpl implements StoreService {
 		return ResponseEntity.ok(response);
 	}
 
+	@Override
+	public ResponseEntity<Response<StoreDto>> findByIdResp(Long id) {
+		log.info("Buscando Loja por ID: {}", id);
+		Response<StoreDto> response = new Response<>();
+		Optional<Store> store = storeService.findById(id);
+
+		if (!store.isPresent()) {
+			log.info("Loja não encontrada para o ID: {}", id);
+			response.getErrors().add("Loja não encontrada para o ID " + id);
+			return ResponseEntity.badRequest().body(response);
+		}
+
+		response.setData(this.converterStoreToDto(store.get()));
+		return ResponseEntity.ok(response);
+	}
+
 }

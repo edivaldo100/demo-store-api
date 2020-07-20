@@ -54,4 +54,14 @@ public interface StoreService {
 	 * @return ResponseEntity<Response<Page<StoreDto>>>
 	 */
 	ResponseEntity<Response<Page<StoreDto>>> listAll();
+	
+	
+	/**
+	 * return Store by id.
+	 * 
+	 * @param id
+	 * @return ResponseEntity<Response<StoreDto>>
+	 */
+	ResponseEntity<Response<StoreDto>> findByIdResp(Long id);
+	
 }
