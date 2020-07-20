@@ -42,6 +42,13 @@ public class User implements Serializable {
 		this.store = store;
 	}
 
+	public User(String name, String email, String password) {
+		this.name = name;
+		this.email = email;
+		this.password = password;
+		this.profile = ProfileEnum.ROLE_USUARIO;
+	}
+
 	@Id
     @GeneratedValue(strategy=GenerationType.AUTO)
 	public Long getId() {

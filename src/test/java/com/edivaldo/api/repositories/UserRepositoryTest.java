@@ -42,7 +42,8 @@ public class UserRepositoryTest {
 		store.setName(STORE_NAME);
 		this.storeRepository.save(store);
 		//Store storeReturn = this.storeRepository.findByName(NAME);
-		User user = new User(NAME, "hulk@onestore.com", "omaisforte", ProfileEnum.ROLE_USUARIO, store);
+		//User user = new User(NAME, "hulk@onestore.com", "omaisforte", ProfileEnum.ROLE_USUARIO, store);
+		User user = new User(NAME, "hulk@onestore.com", NAME);
 		this.userRepository.save(user);
 	}
 	
