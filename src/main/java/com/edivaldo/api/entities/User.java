@@ -96,11 +96,7 @@ public class User implements Serializable {
 		this.profile = profile;
 	}
 
-	//@ManyToOne(fetch = FetchType.EAGER)
-	//@ManyToOne()
-	@ManyToOne(fetch = FetchType.LAZY,  cascade=CascadeType.ALL)
-	//@JoinColumn(name="id")
-	@JoinColumn(name="id", referencedColumnName = "id", insertable = false, updatable = false)    
+	@ManyToOne(fetch = FetchType.EAGER)
 	public Store getStore() {
 		return store;
 	}

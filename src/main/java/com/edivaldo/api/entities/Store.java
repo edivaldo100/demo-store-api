@@ -2,6 +2,7 @@ package com.edivaldo.api.entities;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -21,7 +22,7 @@ public class Store implements Serializable {
 	
 	private Long id;
 	private String name;
-	private List<User> users;
+	private Set<User> users;
 	
 	public Store() {
 	}
@@ -50,14 +51,12 @@ public class Store implements Serializable {
 		this.name = n;
 	}
 
-
-	@OneToMany(targetEntity=User.class, mappedBy="store",cascade=CascadeType.ALL, fetch = FetchType.LAZY)    
-	//@OneToMany(mappedBy = "store", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	public List<User> getUsers() {
+	@OneToMany(mappedBy = "store", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	public Set<User> getUsers() {
 		return users;
 	}
 
-	public void setUsers(List<User> users) {
+	public void setUsers(Set<User> users) {
 		this.users = users;
 	}
 

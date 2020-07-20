@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.edivaldo.api.dtos.StoreDto;
 import com.edivaldo.api.dtos.UserDto;
 import com.edivaldo.api.response.Response;
 import com.edivaldo.api.services.UserService;
@@ -38,7 +39,6 @@ public class UserController {
 	public ResponseEntity<Response<Page<UserDto>>> listAll() throws NoSuchAlgorithmException {
 		return userService.listAll();
 	}
-	
 	
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<Response<UserDto>> update(@PathVariable("id") Long id,

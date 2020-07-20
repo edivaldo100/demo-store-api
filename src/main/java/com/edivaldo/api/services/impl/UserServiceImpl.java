@@ -8,11 +8,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 
+import com.edivaldo.api.dtos.StoreDto;
 import com.edivaldo.api.dtos.UserDto;
 import com.edivaldo.api.entities.Store;
 import com.edivaldo.api.entities.User;
@@ -54,8 +57,13 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public ResponseEntity<Response<Page<UserDto>>> listAll() {
-		// TODO Auto-generated method stub
-		return null;
+		log.info("Lista de Users");
+		Response<Page<UserDto>> response = new Response<Page<UserDto>>();
+		PageRequest pageRequest = new PageRequest(0, 100, Direction.valueOf("ASC"), "id");
+		Page< User> findAll = this.userRepository.findAll(pageRequest);
+		Page<UserDto> pgDto = findAll.map(user -> this.converterUserToDto(user));
+		response.setData(pgDto);
+		return ResponseEntity.ok(response);
 	}
 
 	@Override
@@ -70,17 +78,10 @@ public class UserServiceImpl implements UserService {
 			return ResponseEntity.badRequest().body(response);
 		}
 		User user = this.converterDtoToUser(userDto);
+		//Optional<Store> opStore = storeService.findByName(userDto.getStore().get());
 		User save = this.userRepository.save(user);
 		UserDto newUserDto = this.converterUserToDto(save);
 		response.setData(newUserDto);
-		/*URI location = null;
-		try {
-			location = new URI("local");
-		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return (ResponseEntity<Response<UserDto>>) ResponseEntity.created(location);*/
 		return ResponseEntity.ok(response);
 	}
 
@@ -101,7 +102,11 @@ public class UserServiceImpl implements UserService {
 		user.setPassword(PasswordUtils.gerarBCrypt(userDto.getPassword()));
 		user.setProfile((!userDto.getProfile().isPresent())?ProfileEnum.ROLE_USUARIO:ProfileEnum.forName(userDto.getProfile().get()));
 		Store store;
-		if(userDto.getStore().isPresent()) store = storeService.findByName(userDto.getStore().get()).get();	else store = storeService.findById(1L).get();
+		if(userDto.getStore().isPresent()) {
+			store = storeService.findByName(userDto.getStore().get()).get();
+		}else {
+			store = storeService.findById(1L).get();
+		}
 		user.setStore(store);
 		return user ;
 	}

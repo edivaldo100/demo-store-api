@@ -10,7 +10,7 @@ CREATE TABLE `user` (
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   `profile` varchar(255) NOT NULL,
-  `id_store` bigint(20) DEFAULT NULL
+  `store_id` bigint(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -25,7 +25,7 @@ ALTER TABLE `store`
 --
 ALTER TABLE `user`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `FK4cm1kg523jlopyexjbmi6y54j` (`id_store`);
+  ADD KEY `FK4cm1kg523jlopyexjbmi6y54j` (`store_id`);
 
 --
 -- AUTO_INCREMENT for table `store`
@@ -43,5 +43,5 @@ ALTER TABLE `user`
 -- Constraints for table `users`
 --
 ALTER TABLE `user`
-  ADD CONSTRAINT `FK4cm1kg523jlopyexjbmi6y54j` FOREIGN KEY (`id_store`) REFERENCES `store` (`id`);
+  ADD CONSTRAINT `FK4cm1kg523jlopyexjbmi6y54j` FOREIGN KEY (`store_id`) REFERENCES `store` (`id`);
 
