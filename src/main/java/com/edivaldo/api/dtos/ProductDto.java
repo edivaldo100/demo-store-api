@@ -1,5 +1,8 @@
 package com.edivaldo.api.dtos;
 
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotEmpty;
+
 public class ProductDto {
 	private Long id;
 	private String name;
@@ -18,12 +21,16 @@ public class ProductDto {
 	public void setId(Long id) {
 		this.id = id;
 	}
+	
+	@NotEmpty(message = "Nome não pode ser vazio.")
+	@Length(min = 3, max = 200, message = "Nome deve conter entre 3 e 200 caracteres.")
 	public String getName() {
 		return name;
 	}
 	public void setName(String name) {
 		this.name = name;
 	}
+	
 	public Long getPrice() {
 		return price;
 	}

@@ -64,6 +64,4 @@ public class Ordered implements Serializable {
 		return "Ordered [id=" + id + ", user=" + user + ", productItem=" + productItem + "]";
 	}
 	
-	
-		
 }

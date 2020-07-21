@@ -24,7 +24,6 @@ public class UserDto {
 		this.store = store;
 	}
 	public UserDto(String name, String email, String password) {
-		super();
 		this.name = name;
 		this.email = email;
 		this.password = password;

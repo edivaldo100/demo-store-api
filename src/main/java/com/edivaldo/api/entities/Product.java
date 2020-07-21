@@ -1,16 +1,12 @@
 package com.edivaldo.api.entities;
 
 import java.io.Serializable;
-import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -35,6 +31,11 @@ public class Product implements Serializable {
 		this.price = price;
 	}
 	
+	public Product(Long id, String name, Long price) {
+		this.id = id;
+		this.name = name;
+		this.price = price;
+	}
 	@Id
     @GeneratedValue(strategy=GenerationType.AUTO)
 	@JsonIgnore
