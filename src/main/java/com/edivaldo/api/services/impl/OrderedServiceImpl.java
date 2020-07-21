@@ -74,7 +74,7 @@ public class OrderedServiceImpl implements OrderedService {
 		return ResponseEntity.ok(response);
 	}
 
-	private OrderedDto converterOrderedToDto(Ordered ordered) {
+	public OrderedDto converterOrderedToDto(Ordered ordered) {
 		OrderedDto orderedDto = new OrderedDto();
 		
 		Set<ProductItem> productItem = ordered.getProductItem();

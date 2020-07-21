@@ -45,4 +45,9 @@ public class UserController {
 			@Valid @RequestBody UserDto userDto, BindingResult result) throws NoSuchAlgorithmException {
 		return userService.update(id, userDto, result);
 	}
+	
+	@GetMapping(value = "/{id}")
+	public ResponseEntity<Response<UserDto>> findById(@PathVariable("id") Long id) throws NoSuchAlgorithmException {
+		return userService.findByIdUser(id);
+	}
 }

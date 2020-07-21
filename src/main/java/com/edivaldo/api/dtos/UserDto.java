@@ -1,6 +1,7 @@
 package com.edivaldo.api.dtos;
 
 import java.util.Optional;
+import java.util.Set;
 
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
@@ -13,6 +14,7 @@ public class UserDto {
 	private String password;
 	private Optional<String> profile = Optional.empty();
 	private Optional<String> store = Optional.empty();
+	private Optional<Set<OrderedDto>> orderedDto = Optional.empty();
 	
 	public UserDto() {
 	}
@@ -69,10 +71,18 @@ public class UserDto {
 	public void setStore(Optional<String> store) {
 		this.store = store;
 	}
+	public Optional<Set<OrderedDto>> getOrderedDto() {
+		return orderedDto;
+	}
+	public void setOrderedDto(Optional<Set<OrderedDto>> orderedDto) {
+		this.orderedDto = orderedDto;
+	}
 	@Override
 	public String toString() {
 		return "UserDto [name=" + name + ", email=" + email + ", password=" + password + ", profile=" + profile
-				+ ", store=" + store + "]";
+				+ ", store=" + store + ", orderedDto=" + orderedDto + "]";
 	}
+	
+
 	
 }

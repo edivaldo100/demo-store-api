@@ -2,7 +2,9 @@ package com.edivaldo.api.services.impl;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,13 +17,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 
+import com.edivaldo.api.dtos.OrderedDto;
+import com.edivaldo.api.dtos.ProductItemDTo;
 import com.edivaldo.api.dtos.StoreDto;
 import com.edivaldo.api.dtos.UserDto;
+import com.edivaldo.api.entities.Ordered;
+import com.edivaldo.api.entities.Product;
+import com.edivaldo.api.entities.ProductItem;
 import com.edivaldo.api.entities.Store;
 import com.edivaldo.api.entities.User;
 import com.edivaldo.api.enums.ProfileEnum;
 import com.edivaldo.api.repositories.UserRepository;
 import com.edivaldo.api.response.Response;
+import com.edivaldo.api.services.OrderedService;
 import com.edivaldo.api.services.StoreService;
 import com.edivaldo.api.services.UserService;
 import com.edivaldo.api.utils.PasswordUtils;
@@ -36,6 +44,9 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private StoreService storeService;
+	
+	@Autowired
+	private OrderedServiceImpl orderedService;
 	
 	@Override
 	public Optional<User> findById(Long id) {
@@ -92,6 +103,14 @@ public class UserServiceImpl implements UserService {
 		userDto.setPassword(saveUser.getPassword());
 		userDto.setProfile(Optional.of(saveUser.getProfile().toString()));
 		userDto.setStore(Optional.of(saveUser.getStore().getName()));
+		
+		Set<Ordered> orderedList = saveUser.getOrdered();
+		Set<OrderedDto> orderedDtoList = new HashSet<>();
+		for (Ordered ordered : orderedList) {
+			OrderedDto converterOrderedToDto = this.orderedService.converterOrderedToDto(ordered);
+			orderedDtoList.add(converterOrderedToDto);
+		}
+		userDto.setOrderedDto(Optional.of(orderedDtoList));
 		return userDto;
 	}
 
@@ -168,6 +187,20 @@ public class UserServiceImpl implements UserService {
 		user.setId(id);
 		User save = this.userRepository.saveAndFlush(user);
 		UserDto newUserDto = this.converterUserToDto(save);
+		response.setData(newUserDto);
+		return ResponseEntity.ok(response);
+	}
+
+	@Override
+	public ResponseEntity<Response<UserDto>> findByIdUser(Long id) {
+		log.info("Busca de Usuário na loja {}", id);
+		Response<UserDto> response = new Response<>();
+		User findById = this.userRepository.findById(id);
+		if(findById == null) {
+			response.getErrors().add("Id do Usuário não encontrado.");
+			return ResponseEntity.badRequest().body(response);
+		}
+		UserDto newUserDto = this.converterUserToDto(findById);
 		response.setData(newUserDto);
 		return ResponseEntity.ok(response);
 	}

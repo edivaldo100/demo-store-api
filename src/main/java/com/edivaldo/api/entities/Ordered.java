@@ -50,7 +50,7 @@ public class Ordered implements Serializable {
 		this.user = user;
 	}
 
-	@OneToMany(mappedBy = "ordered", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "ordered", fetch = FetchType.EAGER)
 	public Set<ProductItem> getProductItem() {
 		return productItem;
 	}

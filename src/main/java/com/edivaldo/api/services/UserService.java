@@ -45,5 +45,7 @@ public interface UserService {
 
 	ResponseEntity<Response<UserDto>> update(Long id, UserDto userDto, BindingResult result);
 
+	ResponseEntity<Response<UserDto>> findByIdUser(Long id);
+
 	
 }
