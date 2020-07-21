@@ -23,6 +23,8 @@ import com.edivaldo.api.entities.Product;
 import com.edivaldo.api.entities.ProductItem;
 import com.edivaldo.api.entities.User;
 import com.edivaldo.api.repositories.OrderedRepository;
+import com.edivaldo.api.repositories.ProductItemRepository;
+import com.edivaldo.api.repositories.ProductRepository;
 import com.edivaldo.api.repositories.UserRepository;
 import com.edivaldo.api.response.Response;
 import com.edivaldo.api.services.OrderedService;
@@ -36,6 +38,12 @@ public class OrderedServiceImpl implements OrderedService {
 	@Autowired
 	private UserRepository userRepository;
 
+	@Autowired
+	private ProductRepository productRepository;
+	
+	@Autowired
+	private ProductItemRepository productItemRepository;
+	
 	@Autowired
 	private StoreService storeService;
 	
@@ -115,16 +123,37 @@ public class OrderedServiceImpl implements OrderedService {
 		}
 		Ordered ordered = this.converteOrderedDtoToEntity(orderedDto);
 		Ordered orderedSave = this.orderedRepository.saveAndFlush(ordered);
+		
+		saveItemProducts(orderedSave, ordered);
+		
 		OrderedDto newDto = this.converterOrderedToDto(orderedSave);
 		response.setData(newDto);
 		return ResponseEntity.ok(response);
 	}
-
+	private void saveItemProducts(Ordered orderedSave, Ordered ordered) {
+		
+		ordered.getProductItem().forEach(action->{
+			Product product = action.getProduct();
+			this.productItemRepository.saveAndFlush(new ProductItem(null, orderedSave, product));
+		});
+		
+	}
 	private Ordered converteOrderedDtoToEntity(OrderedDto orderedDto) {
 		Ordered ordered = new Ordered();
-		ordered.setId(orderedDto.getOrderNumber());
-		//Set<ProductItem> productItem;
-		//ordered.setProductItem(productItem);
+		Set<ProductItem> productItem = new HashSet<>();
+		
+		Set<ProductItemDTo> productItemDToList = orderedDto.getProductItemDTo();
+		
+		
+		for (ProductItemDTo productItemDTo : productItemDToList) {
+			ProductItem productIte = new ProductItem();
+			Long id = productItemDTo.getProduct().getId();
+			Product product = productRepository.findById(id);
+			productIte.setProduct(product);
+			productItem.add(productIte);
+		}
+		
+		ordered.setProductItem(productItem);
 		User user = this.userRepository.findById(orderedDto.getUserId());
 		ordered.setUser(user);
 			
@@ -138,7 +167,21 @@ public class OrderedServiceImpl implements OrderedService {
 		 User findByIdUser = this.userRepository.findById(orderedDto.getUserId());
 		if(findByIdUser == null) result.addError(new ObjectError("order", "Cliente com ID: "+orderedDto.getUserId()+" não cadastrado."));
 		
-		
+		Set<ProductItemDTo> productItemDToList = orderedDto.getProductItemDTo();
+		if(productItemDToList != null) {
+			productItemDToList.forEach(productItemDTo ->{
+				ProductDto productDto = productItemDTo.getProduct();
+				if(productDto != null) {
+					Long id = productDto.getId();
+					if(id != null) { 
+						Product product = productRepository.findById(id);
+						if(product == null) result.addError(new ObjectError("product", "Produto com ID: "+productDto.getId()+" não cadastrado."));
+					}else {
+						result.addError(new ObjectError("product", "Produto com ID: "+productDto.getId()+" não cadastrado."));
+					}
+				}
+			});
+		}
 	}
 
 	@Override
@@ -179,7 +222,7 @@ public class OrderedServiceImpl implements OrderedService {
 		Ordered ordered = this.orderedRepository.findById(orderNumber);
 		if(ordered == null) {
 			log.info("Erro na validação de Dados {}");
-			response.getErrors().add("Número de Pedido Não cadastrado.");
+			response.getErrors().add("Número de Pedido Não nãocadastrado.");
 			return ResponseEntity.badRequest().body(response);
 		}
 		OrderedDto newDto = this.converterOrderedToDto(ordered);
