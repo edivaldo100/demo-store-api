@@ -19,4 +19,4 @@ insert into store.ordered (id, user_id)
 	values (null,1);
 	
  insert into store.product_item (id, ordered_id, product_id) 
-	values (1, 1,1);
+	values (null, 1,1);

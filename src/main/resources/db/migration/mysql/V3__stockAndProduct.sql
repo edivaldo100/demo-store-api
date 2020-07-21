@@ -53,8 +53,14 @@ ALTER TABLE `stock`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
   
   
+--
+-- AUTO_INCREMENT for table `product_item`
+--
+ALTER TABLE `product_item`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
   
-  --
+  
+--
 -- Indexes for table `product_item`
 --
 ALTER TABLE `product_item`
