@@ -106,11 +106,13 @@ public class UserServiceImpl implements UserService {
 		
 		Set<Ordered> orderedList = saveUser.getOrdered();
 		Set<OrderedDto> orderedDtoList = new HashSet<>();
-		for (Ordered ordered : orderedList) {
-			OrderedDto converterOrderedToDto = this.orderedService.converterOrderedToDto(ordered);
-			orderedDtoList.add(converterOrderedToDto);
+		if(orderedList != null) {
+			for (Ordered ordered : orderedList) {
+				OrderedDto converterOrderedToDto = this.orderedService.converterOrderedToDto(ordered);
+				orderedDtoList.add(converterOrderedToDto);
+			}
+			userDto.setOrderedDto(Optional.of(orderedDtoList));
 		}
-		userDto.setOrderedDto(Optional.of(orderedDtoList));
 		return userDto;
 	}
 
