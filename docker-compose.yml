@@ -1,0 +1,31 @@
+version: '2.3'
+volumes:
+  dados:
+services:
+  db:
+    image: mysql:5.6
+    volumes:
+      - type: bind
+        source: ./src/main/resources/db/migration
+        target: /docker-entrypoint-initdb.d
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=root
+      - MYSQL_DATABASE=store
+    ports:
+      - 3306:3306
+  demo-store-api:
+    image: edivaldo100/demo-store-api:1.0.0
+    container_name: demo-store-api
+    depends_on:
+      - db
+    ports:
+      - 8080:8080
+    environment:
+      - DATABASE_HOST=db
+      - DATABASE_USER=root
+      - DATABASE_PASSWORD=root
+      - DATABASE_NAME=store
+      - DATABASE_PORT=3306
+  

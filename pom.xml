@@ -5,7 +5,7 @@
 	
 	<groupId>com.edivaldo</groupId>
 	<artifactId>demo-store-api</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>demo-store-api</name>
 	<description>uma API REST para simular uma loja virtual. Com cadastro de seus clientes, produtos e pedidos.</description>
 	
@@ -111,13 +111,40 @@
 	</dependencies>
 
 	<build>
+		
+		<finalName>${project.artifactId}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-		</plugins>
-	</build>
 
+			<plugin>
+				<groupId>com.spotify</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>0.4.11</version>
+				<configuration>
+					<imageName>edivaldo100/${project.artifactId}:${project.version}</imageName>
+					<dockerDirectory>src/Docker</dockerDirectory>
+					<resources>
+						<resource>
+							<targetPath>/</targetPath>
+							<directory>${project.build.directory}</directory>
+							<include>${project.build.finalName}.jar</include>
+						</resource>
+
+						<resource>
+							<targetPath>/</targetPath>
+							<directory>${project.basedir}/src/main/resources</directory>
+							<include>*.*</include>
+						</resource>
+
+					</resources>
+				</configuration>
+			</plugin>
+		</plugins>
+	
+		
+	</build>
 
 </project>
