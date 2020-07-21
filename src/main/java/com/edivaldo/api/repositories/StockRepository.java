@@ -13,9 +13,9 @@ public interface StockRepository extends JpaRepository<Stock, Long> {
 	@Transactional(readOnly = true)
 	Stock findById(Long id);
 	
-	@Transactional(readOnly = true)
-	Product findByProduct(Product product);
+	//@Transactional(readOnly = true)
+	//Product findByProduct(Product product);
 	
-	@Transactional(readOnly = true)
-	Product findByProductName(String productName);
+	//@Transactional(readOnly = true)
+	//Product findByProductName(String productName);
 }

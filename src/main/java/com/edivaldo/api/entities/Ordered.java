@@ -4,72 +4,66 @@ import java.io.Serializable;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 @Entity
-@Table(name = "product")
-public class Product implements Serializable {
+@Table(name = "ordered")
+//@Getter @Setter @NoArgsConstructor @ToString
+public class Ordered implements Serializable {
 
 	private static final long serialVersionUID = -5754246207015712518L;
 	
 	private Long id;
-	private String name;
-	private Long price;
-	//private Set<ProductItem> productItem;
-	
-	
-	public Product() {
-	}
-	public Product(String name, Long price) {
-		this.name = name;
-		this.price = price;
+	private User user;
+	private Set<ProductItem> productItem;
+	public Ordered() {
 	}
 	
 	@Id
     @GeneratedValue(strategy=GenerationType.AUTO)
-	@JsonIgnore
 	public Long getId() {
 		return id;
 	}
+
 	public void setId(Long id) {
 		this.id = id;
 	}
 	
-	@Column(name = "name", nullable = false)
-	@JsonIgnore
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
 	
-	@Column(name = "price", nullable = false)
-	@JsonIgnore
-	public Long getPrice() {
-		return price;
+	@ManyToOne(fetch = FetchType.EAGER)
+	public User getUser() {
+		return user;
 	}
-	public void setPrice(Long price) {
-		this.price = price;
+
+	public void setUser(User user) {
+		this.user = user;
 	}
-	/*@OneToMany(mappedBy = "ordered", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JsonIgnore
+
+	@OneToMany(mappedBy = "ordered", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	public Set<ProductItem> getProductItem() {
 		return productItem;
 	}
+
 	public void setProductItem(Set<ProductItem> productItem) {
 		this.productItem = productItem;
-	}*/
+	}
+
+	@Override
+	public String toString() {
+		return "Ordered [id=" + id + ", user=" + user + ", productItem=" + productItem + "]";
+	}
 	
 	
+		
 }

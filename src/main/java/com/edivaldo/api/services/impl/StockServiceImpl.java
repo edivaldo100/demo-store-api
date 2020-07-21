@@ -38,7 +38,8 @@ public class StockServiceImpl implements StockService {
 	@Override
 	public Optional<Product> findByName(String name) {
 		log.info("Buscando Stock por Nome do produto {}", name);
-		return Optional.ofNullable(stockRepository.findByProductName(name));
+		//return Optional.ofNullable(stockRepository.findByProductName(name));
+		return null;
 	}
 
 }

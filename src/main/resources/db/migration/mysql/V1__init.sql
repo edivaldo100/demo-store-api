@@ -1,3 +1,18 @@
+SET default_storage_engine=InnoDB;
+
+USE store;    
+    
+DROP TABLE IF EXISTS ordered_has_product;
+
+    DROP TABLE IF EXISTS product;
+
+    DROP TABLE IF EXISTS stock;
+
+    DROP TABLE IF EXISTS store;
+
+    DROP TABLE IF EXISTS user;
+    DROP TABLE IF EXISTS ordered;
+
 CREATE TABLE `store` (
   `id` bigint(20) NOT NULL,
   `name` varchar(255) NOT NULL

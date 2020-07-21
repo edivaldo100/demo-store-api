@@ -1,6 +1,7 @@
 package com.edivaldo.api.entities;
 
 import java.io.Serializable;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -11,11 +12,13 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.edivaldo.api.enums.ProfileEnum;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 
 @Entity
@@ -30,7 +33,8 @@ public class User implements Serializable {
 	private String password;
 	private ProfileEnum profile;
 	private Store store;
-
+	private Set<Ordered> ordered;
+	
 	public User() {
 	}
 
@@ -96,7 +100,7 @@ public class User implements Serializable {
 		this.profile = profile;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	public Store getStore() {
 		return store;
 	}
@@ -104,5 +108,15 @@ public class User implements Serializable {
 	public void setStore(Store store) {
 		this.store = store;
 	}
+	
+	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	public Set<Ordered> getOrdered() {
+		return ordered;
+	}
+
+	public void setOrdered(Set<Ordered> ordered) {
+		this.ordered = ordered;
+	}
+
 
 }

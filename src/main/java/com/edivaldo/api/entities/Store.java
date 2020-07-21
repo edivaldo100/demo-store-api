@@ -1,7 +1,6 @@
 package com.edivaldo.api.entities;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -13,6 +12,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "store")
@@ -34,6 +35,7 @@ public class Store implements Serializable {
 
 	@Id
     @GeneratedValue(strategy=GenerationType.AUTO)
+	@JsonIgnore
 	public Long getId() {
 		return id;
 	}
@@ -43,6 +45,7 @@ public class Store implements Serializable {
 	}
 
 	@Column(name = "name", nullable = false)
+	@JsonIgnore
 	public String getName() {
 		return name;
 	}
@@ -52,6 +55,7 @@ public class Store implements Serializable {
 	}
 
 	@OneToMany(mappedBy = "store", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JsonIgnore
 	public Set<User> getUsers() {
 		return users;
 	}
