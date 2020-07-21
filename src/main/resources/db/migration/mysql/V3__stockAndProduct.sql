@@ -25,7 +25,12 @@ create table ordered (
         primary key (id)
    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
+--
+-- AUTO_INCREMENT for table `ordered`
+--
+ALTER TABLE `ordered`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+   
 --
 -- Indexes for table `ordered`
 --

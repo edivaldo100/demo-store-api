@@ -13,6 +13,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 
 import com.edivaldo.api.dtos.OrderedDto;
 import com.edivaldo.api.dtos.ProductDto;
@@ -69,15 +70,17 @@ public class OrderedServiceImpl implements OrderedService {
 		OrderedDto orderedDto = new OrderedDto();
 		
 		Set<ProductItem> productItem = ordered.getProductItem();
-		Set<ProductItemDTo> productItemDto = converterProductItemDToToDto(productItem);
-		
+		if(productItem != null) {
+			Set<ProductItemDTo> productItemDto = converterProductItemDToToDto(productItem);
+			orderedDto.setProductItemDTo(productItemDto);
+		}
 		Long orderNumber = ordered.getId();
 		orderedDto.setOrderNumber(orderNumber);
 		Long userId = ordered.getUser().getId();
 		orderedDto.setUserId(userId);
 		String userName = ordered.getUser().getName();
 		orderedDto.setUserName(userName);
-		orderedDto.setProductItemDTo(productItemDto);
+		
 		
 		return orderedDto;
 	}
@@ -101,8 +104,41 @@ public class OrderedServiceImpl implements OrderedService {
 
 	@Override
 	public ResponseEntity<Response<OrderedDto>> register(OrderedDto orderedDto, BindingResult result) {
-		// TODO Auto-generated method stub
-		return null;
+		log.info("cadastro de Order de pedido na loja {}", orderedDto.toString());
+		Response<OrderedDto> response = new Response<>();
+		
+		validaData(orderedDto, result);
+		if(result.hasErrors()) {
+			log.info("Erro na validação de Dados {}", result.getAllErrors());
+			result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
+			return ResponseEntity.badRequest().body(response);
+		}
+		Ordered ordered = this.converteOrderedDtoToEntity(orderedDto);
+		Ordered orderedSave = this.orderedRepository.saveAndFlush(ordered);
+		OrderedDto newDto = this.converterOrderedToDto(orderedSave);
+		response.setData(newDto);
+		return ResponseEntity.ok(response);
+	}
+
+	private Ordered converteOrderedDtoToEntity(OrderedDto orderedDto) {
+		Ordered ordered = new Ordered();
+		ordered.setId(orderedDto.getOrderNumber());
+		//Set<ProductItem> productItem;
+		//ordered.setProductItem(productItem);
+		User user = this.userRepository.findById(orderedDto.getUserId());
+		ordered.setUser(user);
+			
+		return ordered;
+	}
+
+	private void validaData(OrderedDto orderedDto, BindingResult result) {
+		Ordered findById = this.orderedRepository.findById(orderedDto.getOrderNumber());
+		if(findById != null) result.addError(new ObjectError("order", "Número de Pedido já cadastrado."));
+		
+		 User findByIdUser = this.userRepository.findById(orderedDto.getUserId());
+		if(findByIdUser == null) result.addError(new ObjectError("order", "Cliente com ID: "+orderedDto.getUserId()+" não cadastrado."));
+		
+		
 	}
 
 	@Override
@@ -115,6 +151,40 @@ public class OrderedServiceImpl implements OrderedService {
 	public ResponseEntity<Response<OrderedDto>> update(Long id, OrderedDto orderedDto, BindingResult result) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public ResponseEntity<Response<OrderedDto>> findByOrderNumber(Long id, BindingResult result) {
+		log.info("Consulta de Order de pedido na loja {}", id);
+		Response<OrderedDto> response = new Response<>();
+		
+		Ordered ordered = this.orderedRepository.findById(id);
+		if(ordered != null) result.addError(new ObjectError("order", "Número de Pedido já cadastrado."));
+		
+		if(result.hasErrors()) {
+			log.info("Erro na validação de Dados {}", result.getAllErrors());
+			result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
+			return ResponseEntity.badRequest().body(response);
+		}
+		OrderedDto newDto = this.converterOrderedToDto(ordered);
+		response.setData(newDto);
+		return ResponseEntity.ok(response);
+	}
+
+	@Override
+	public ResponseEntity<Response<OrderedDto>> findByOrderNumber(Long orderNumber) {
+		log.info("Consulta de Order de pedido na loja {}", orderNumber);
+		Response<OrderedDto> response = new Response<>();
+		
+		Ordered ordered = this.orderedRepository.findById(orderNumber);
+		if(ordered == null) {
+			log.info("Erro na validação de Dados {}");
+			response.getErrors().add("Número de Pedido Não cadastrado.");
+			return ResponseEntity.badRequest().body(response);
+		}
+		OrderedDto newDto = this.converterOrderedToDto(ordered);
+		response.setData(newDto);
+		return ResponseEntity.ok(response);
 	}
 	
 	

@@ -39,5 +39,11 @@ public interface OrderedService {
 
 	ResponseEntity<Response<OrderedDto>> update(Long id, OrderedDto orderedDto, BindingResult result);
 
+
+	ResponseEntity<Response<OrderedDto>> findByOrderNumber(Long id, BindingResult result);
+
+
+	ResponseEntity<Response<OrderedDto>> findByOrderNumber(Long orderNumber);
+
 	
 }

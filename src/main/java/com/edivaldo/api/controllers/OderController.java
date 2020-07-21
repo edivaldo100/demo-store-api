@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.edivaldo.api.dtos.OrderedDto;
+import com.edivaldo.api.dtos.StoreDto;
 import com.edivaldo.api.dtos.UserDto;
 import com.edivaldo.api.response.Response;
 import com.edivaldo.api.services.OrderedService;
@@ -28,17 +29,21 @@ import com.edivaldo.api.services.OrderedService;
 public class OderController {
 	
 	@Autowired
-	private OrderedService OrderedService;
+	private OrderedService orderedService;
 	
-	@PostMapping("/register")
-	public ResponseEntity<Response<OrderedDto>> register(@Valid @RequestBody UserDto userDto, BindingResult result) throws NoSuchAlgorithmException {
-		return null;
-		//return userService.register(userDto, result);
+	@PostMapping("/create")
+	public ResponseEntity<Response<OrderedDto>> create(@Valid @RequestBody OrderedDto orderedDto, BindingResult result) throws NoSuchAlgorithmException {
+		return orderedService.register(orderedDto, result);
 	}
 	
 	@GetMapping
 	public ResponseEntity<Response<Page<OrderedDto>>> listAll() throws NoSuchAlgorithmException {
-		return OrderedService.listAll();
+		return orderedService.listAll();
+	}
+	
+	@GetMapping(value = "/{orderNumber}")
+	public ResponseEntity<Response<OrderedDto>> findByOrderNumber(@PathVariable("orderNumber") Long orderNumber) throws NoSuchAlgorithmException {
+		return orderedService.findByOrderNumber(orderNumber);
 	}
 	
 	@PutMapping(value = "/{id}")
