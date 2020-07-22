@@ -1,7 +1,5 @@
 package com.edivaldo.api.controllers;
 
-import java.security.NoSuchAlgorithmException;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +14,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.edivaldo.api.dtos.StoreDto;
 import com.edivaldo.api.dtos.UserDto;
@@ -30,24 +29,46 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 	
+	/**
+	 * Method for create User In the Store
+	 * @param userDto
+	 * @param result
+	 * @return ResponseEntity<Response<UserDto>> 
+	 */
 	@PostMapping("/register")
-	public ResponseEntity<Response<UserDto>> register(@Valid @RequestBody UserDto userDto, BindingResult result) throws NoSuchAlgorithmException {
-		return userService.register(userDto, result);
+	public ResponseEntity<?> createUser(@Valid @RequestBody UserDto userDto, BindingResult result, UriComponentsBuilder ucBuilder){
+		return userService.register(userDto, result, ucBuilder);
 	}
 	
+	/**
+	 * List all Users
+	 * @return ResponseEntity<Response<Page<UserDto>>> 
+	 */
 	@GetMapping
-	public ResponseEntity<Response<Page<UserDto>>> listAll() throws NoSuchAlgorithmException {
+	public ResponseEntity<Response<Page<UserDto>>> listAll() {
 		return userService.listAll();
 	}
 	
+	/**
+	 * Method for update a User In the Store
+	 * @param id
+	 * @param userDto
+	 * @param result
+	 * @return ResponseEntity<Response<UserDto>>
+	 */
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<Response<UserDto>> update(@PathVariable("id") Long id,
-			@Valid @RequestBody UserDto userDto, BindingResult result) throws NoSuchAlgorithmException {
+			@Valid @RequestBody UserDto userDto, BindingResult result) {
 		return userService.update(id, userDto, result);
 	}
 	
+	/**
+	 * Method for update a User In the Store
+	 * @param id
+	 * @return ResponseEntity<Response<UserDto>>
+	 */
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<Response<UserDto>> findById(@PathVariable("id") Long id) throws NoSuchAlgorithmException {
+	public ResponseEntity<Response<UserDto>> findById(@PathVariable("id") Long id) {
 		return userService.findByIdUser(id);
 	}
 }

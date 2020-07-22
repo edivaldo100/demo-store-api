@@ -9,6 +9,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 public class UserDto {
 	
+	private Long id;
 	private String name;
 	private String email;
 	private String password;
@@ -18,7 +19,7 @@ public class UserDto {
 	
 	public UserDto() {
 	}
-	public UserDto(String name, String email, String password, Optional<String> profile, Optional<String> store) {
+	public UserDto(Long id, String name, String email, String password, Optional<String> profile, Optional<String> store) {
 		this.name = name;
 		this.email = email;
 		this.password = password;
@@ -76,6 +77,13 @@ public class UserDto {
 	}
 	public void setOrderedDto(Optional<Set<OrderedDto>> orderedDto) {
 		this.orderedDto = orderedDto;
+	}
+	
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
 	}
 	@Override
 	public String toString() {

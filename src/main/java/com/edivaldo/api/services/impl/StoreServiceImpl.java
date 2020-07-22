@@ -8,10 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.edivaldo.api.dtos.StoreDto;
 import com.edivaldo.api.entities.Store;
@@ -29,8 +32,7 @@ public class StoreServiceImpl implements StoreService {
 
 	@Autowired
 	private StoreService storeService;
-	
-	
+
 	@Override
 	public Optional<Store> findById(Long id) {
 		log.info("Buscando uma Loja por Id {}", id);
@@ -53,21 +55,27 @@ public class StoreServiceImpl implements StoreService {
 	public ResponseEntity<Response<StoreDto>> register(StoreDto storeDto, BindingResult result) {
 		log.info("cadastro de loja {}", storeDto.toString());
 		Response<StoreDto> response = new Response<>();
-		
-		validaData(storeDto, result);
-		Store store = this.converterDtoToStore(storeDto);
-		
-		if(result.hasErrors()) {
-			log.info("Erro na validação de Dados {}", result.getAllErrors());
-			result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
+		try {
+
+			validaData(storeDto, result);
+			Store store = this.converterDtoToStore(storeDto);
+
+			if (result.hasErrors()) {
+				log.info("Erro na validação de Dados {}", result.getAllErrors());
+				result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
+				return ResponseEntity.badRequest().body(response);
+			}
+			this.storeService.persistir(store);
+			StoreDto newStoreDto = this.converterStoreToDto(store);
+			response.setData(newStoreDto);
+			return ResponseEntity.ok(response);
+		} catch (Exception e) {
+			log.info("Erro Default");
+			response.getErrors().add("Erro interno, tente mais tarde.");
 			return ResponseEntity.badRequest().body(response);
 		}
-		this.storeService.persistir(store);
-		StoreDto newStoreDto = this.converterStoreToDto(store);
-		response.setData(newStoreDto);
-		return ResponseEntity.ok(response);
 	}
-	
+
 	private StoreDto converterStoreToDto(Store store) {
 		return new StoreDto(store.getId(), store.getName());
 	}
@@ -78,41 +86,85 @@ public class StoreServiceImpl implements StoreService {
 
 	/**
 	 * data validation
+	 * 
 	 * @param storeDto
 	 * @param result
 	 */
 	private void validaData(StoreDto storeDto, BindingResult result) {
-		//Optional<Store> findByName = storeService.findByName(storeDto.getName());
-		//if(findByName.isPresent()) result.addError(new ObjectError("Loja", "Loja já cadastrada."));
+		// Optional<Store> findByName = storeService.findByName(storeDto.getName());
+		// if(findByName.isPresent()) result.addError(new ObjectError("Loja", "Loja já
+		// cadastrada."));
 		storeService.findByName(storeDto.getName())
-		.ifPresent(store -> result.addError(new ObjectError("Loja", "Loja já cadastrada.")));
+				.ifPresent(store -> result.addError(new ObjectError("Loja", "Loja já cadastrada.")));
 	}
 
 	@Override
 	public ResponseEntity<Response<Page<StoreDto>>> listAll() {
 		log.info("Lista de lojas");
 		Response<Page<StoreDto>> response = new Response<Page<StoreDto>>();
-		PageRequest pageRequest = new PageRequest(0, 100, Direction.valueOf("DESC"), "id");
-		Page<Store> findAll = this.storeRepository.findAll(pageRequest);
-		Page<StoreDto> pgStoreDto = findAll.map(store -> this.converterStoreToDto(store));
-		response.setData(pgStoreDto);
-		return ResponseEntity.ok(response);
+		try {
+
+			PageRequest pageRequest = new PageRequest(0, 100, Direction.valueOf("DESC"), "id");
+			Page<Store> findAll = this.storeRepository.findAll(pageRequest);
+			Page<StoreDto> pgStoreDto = findAll.map(store -> this.converterStoreToDto(store));
+			response.setData(pgStoreDto);
+			return ResponseEntity.ok(response);
+		} catch (Exception e) {
+			log.info("Erro Default");
+			response.getErrors().add("Erro interno, tente mais tarde.");
+			return ResponseEntity.badRequest().body(response);
+		}
 	}
 
 	@Override
 	public ResponseEntity<Response<StoreDto>> findByIdResp(Long id) {
 		log.info("Buscando Loja por ID: {}", id);
 		Response<StoreDto> response = new Response<>();
-		Optional<Store> store = storeService.findById(id);
+		try {
 
-		if (!store.isPresent()) {
-			log.info("Loja não encontrada para o ID: {}", id);
-			response.getErrors().add("Loja não encontrada para o ID " + id);
+			Optional<Store> store = storeService.findById(id);
+
+			if (!store.isPresent()) {
+				log.info("Loja não encontrada para o ID: {}", id);
+				response.getErrors().add("Loja não encontrada para o ID " + id);
+				return ResponseEntity.badRequest().body(response);
+			}
+
+			response.setData(this.converterStoreToDto(store.get()));
+			return ResponseEntity.ok(response);
+		} catch (Exception e) {
+			log.info("Erro Default");
+			response.getErrors().add("Erro interno, tente mais tarde.");
 			return ResponseEntity.badRequest().body(response);
 		}
+	}
 
-		response.setData(this.converterStoreToDto(store.get()));
-		return ResponseEntity.ok(response);
+	@Override
+	public ResponseEntity<?> registerNewUser(StoreDto storeDto, BindingResult result, UriComponentsBuilder ucBuilder) {
+		log.info("cadastro de loja {}", storeDto.toString());
+		Response<StoreDto> response = new Response<>();
+		try {
+
+			validaData(storeDto, result);
+			Store store = this.converterDtoToStore(storeDto);
+
+			if (result.hasErrors()) {
+				log.info("Erro na validação de Dados {}", result.getAllErrors());
+				result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
+				return ResponseEntity.badRequest().body(response);
+			}
+			this.storeService.persistir(store);
+			StoreDto newStoreDto = this.converterStoreToDto(store);
+			response.setData(newStoreDto);
+
+			HttpHeaders headers = new HttpHeaders();
+			headers.setLocation(ucBuilder.path("/api/stores/{id}").buildAndExpand(newStoreDto.getId()).toUri());
+			return new ResponseEntity<Response<StoreDto>>(response, headers, HttpStatus.CREATED);
+		} catch (Exception e) {
+			log.info("Erro Default");
+			response.getErrors().add("Erro interno, tente mais tarde.");
+			return ResponseEntity.badRequest().body(response);
+		}
 	}
 
 }

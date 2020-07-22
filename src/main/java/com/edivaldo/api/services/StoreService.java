@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.edivaldo.api.dtos.StoreDto;
 import com.edivaldo.api.entities.Store;
@@ -63,5 +64,14 @@ public interface StoreService {
 	 * @return ResponseEntity<Response<StoreDto>>
 	 */
 	ResponseEntity<Response<StoreDto>> findByIdResp(Long id);
+	/**
+	 * Create new Store
+	 * @param ucBuilder 
+	 * @param result 
+	 * 
+	 * @param Store
+	 * @return ResponseEntity<?>
+	 */
+	ResponseEntity<?> registerNewUser(StoreDto storeDto, BindingResult result, UriComponentsBuilder ucBuilder);
 	
 }
